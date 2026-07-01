@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ahorcado multijugador</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="lobby" id="lobby" aria-labelledby="lobbyTitle">
+        <header class="lobby-head">
+          <p class="kicker">Ahorcado multijugador</p>
+          <h1 id="lobbyTitle">Crear o entrar a una sala</h1>
+          <p class="link-notice" id="linkNotice"></p>
+        </header>
+
+        <div class="lobby-fields">
+          <label class="field">
+            <span>Tu nombre</span>
+            <input id="playerName" autocomplete="name" maxlength="24" placeholder="Fernando">
+          </label>
+
+          <label class="field">
+            <span>Codigo de sala</span>
+            <input id="roomCode" autocomplete="off" autocapitalize="characters" inputmode="text" maxlength="6" placeholder="ABC123">
+          </label>
+        </div>
+
+        <div class="lobby-actions">
+          <button id="createRoom" class="primary" type="button">Crear sala</button>
+          <button id="joinRoom" class="secondary" type="button">Entrar</button>
+        </div>
+
+        <p class="error" id="lobbyError" role="alert"></p>
+      </section>
+
+      <section class="game hidden" id="game" aria-labelledby="statusTitle">
+        <header class="room-bar">
+          <div class="room-code">
+            <span>Sala</span>
+            <strong id="roomId">------</strong>
+          </div>
+          <div class="room-actions">
+            <button id="copyLink" class="secondary small" type="button">Copiar enlace</button>
+            <button id="newRound" class="primary small hidden" type="button">Nueva palabra</button>
+          </div>
+        </header>
+
+        <section class="turn-strip" id="turnStrip" aria-live="polite">
+          <div>
+            <p class="kicker" id="turnLabel">Turno</p>
+            <h1 id="statusTitle">Partida en marcha</h1>
+          </div>
+          <p id="statusDetail" class="status-detail"></p>
+        </section>
+
+        <section class="end-banner hidden" id="endBanner" role="status" aria-live="polite">
+          <span id="endLabel">Fin de partida</span>
+          <strong id="endTitle"></strong>
+          <p id="endMessage"></p>
+        </section>
+
+        <section class="board" aria-label="Partida">
+          <div class="drawing" aria-label="Ahorcado">
+            <svg viewBox="0 0 220 240" role="img" aria-hidden="true">
+              <line class="gallows" x1="28" y1="222" x2="190" y2="222"></line>
+              <line class="gallows" x1="58" y1="222" x2="58" y2="22"></line>
+              <line class="gallows" x1="58" y1="22" x2="154" y2="22"></line>
+              <line class="gallows" x1="154" y1="22" x2="154" y2="52"></line>
+              <circle class="body part-1" cx="154" cy="74" r="22"></circle>
+              <line class="body part-2" x1="154" y1="96" x2="154" y2="154"></line>
+              <line class="body part-3" x1="154" y1="114" x2="124" y2="138"></line>
+              <line class="body part-4" x1="154" y1="114" x2="184" y2="138"></line>
+              <line class="body part-5" x1="154" y1="154" x2="128" y2="190"></line>
+              <line class="body part-6" x1="154" y1="154" x2="180" y2="190"></line>
+            </svg>
+          </div>
+
+          <div class="word-panel">
+            <div id="word" class="word" aria-label="Palabra"></div>
+            <p id="answer" class="answer"></p>
+          </div>
+        </section>
+
+        <section class="scoreboard" id="scoreBoard" aria-label="Marcador de jugadores"></section>
+
+        <section class="round-meta" aria-label="Estado de la ronda">
+          <div>
+            <span>Fallos</span>
+            <strong><span id="misses">0</span>/<span id="maxWrong">6</span></strong>
+          </div>
+          <div>
+            <span>Ultima jugada</span>
+            <strong id="lastMove">Sin jugadas</strong>
+          </div>
+        </section>
+
+        <p id="gameError" class="error game-error" role="alert"></p>
+        <section class="keyboard" id="keyboard" aria-label="Teclado de letras"></section>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

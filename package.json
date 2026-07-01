@@ -1,0 +1,14 @@
+{
+  "name": "ahorcado-multijugador-netlify",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx netlify-cli@latest dev",
+    "test": "node --test tests/room.test.mjs",
+    "deploy": "npx netlify-cli@latest deploy --prod"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^9.1.0"
+  }
+}
