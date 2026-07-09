@@ -37,6 +37,7 @@ const els = {
   scoreBoard: $("#scoreBoard"),
   misses: $("#misses"),
   maxWrong: $("#maxWrong"),
+  missMeter: $("#missMeter"),
   lastMove: $("#lastMove"),
   keyboard: $("#keyboard")
 };
@@ -81,6 +82,11 @@ const linkRoom = cleanRoomCode(new URLSearchParams(location.search).get("sala") 
 if (linkRoom) {
   els.roomCode.value = linkRoom;
   els.linkNotice.textContent = `Sala ${linkRoom}`;
+  if (currentName()) {
+    window.setTimeout(() => joinRoom(linkRoom), 120);
+  } else {
+    els.playerName.focus();
+  }
 }
 
 async function createRoom() {
@@ -191,12 +197,20 @@ function render() {
   const finished = isFinished(room);
   const result = finished ? finalResult(room, players) : null;
   const visibleParts = Math.min(6, Math.max(0, Math.ceil((missCount / maxWrong) * 6)));
+  const classes = [
+    `miss-${visibleParts}`,
+    `status-${room.status || "playing"}`,
+    isMyTurn() && isPlaying(room) ? "my-turn" : "waiting-turn",
+    finished ? "finished" : "",
+    state.busy ? "busy" : ""
+  ].filter(Boolean);
 
-  document.body.className = `miss-${visibleParts} status-${room.status || "playing"}`;
+  document.body.className = classes.join(" ");
 
   els.roomId.textContent = room.id || "------";
   els.misses.textContent = String(missCount);
   els.maxWrong.textContent = String(maxWrong);
+  els.missMeter.style.width = `${Math.min(100, Math.round((missCount / maxWrong) * 100))}%`;
   els.lastMove.textContent = lastMoveText(room.lastMove);
   els.answer.textContent = finished && room.answer ? `Palabra: ${room.answer}` : "";
 
@@ -226,7 +240,7 @@ function renderTurn(room, players, result) {
 
   if (isMyTurn()) {
     els.statusTitle.textContent = "Tu turno";
-    els.statusDetail.textContent = `${players.length}/2 jugadores`;
+    els.statusDetail.textContent = players.length < 2 ? "Esperando jugador" : `${players.length}/2 jugadores`;
     return;
   }
 
@@ -285,7 +299,7 @@ function renderScoreboard(room, players, result) {
 
   const tiedIds = new Set(result?.players?.map((player) => player.id) || []);
 
-  for (const player of players) {
+  players.forEach((player, index) => {
     const row = document.createElement("article");
     row.className = "score-row";
     row.classList.toggle("you", player.id === state.playerId);
@@ -293,12 +307,20 @@ function renderScoreboard(room, players, result) {
     row.classList.toggle("winner", result?.type === "winner" && result.playerId === player.id);
     row.classList.toggle("tie", result?.type === "tie" && tiedIds.has(player.id));
 
+    const avatar = document.createElement("span");
+    avatar.className = "score-avatar";
+    avatar.textContent = initials(player.name, index);
+
     const nameBlock = document.createElement("div");
     nameBlock.className = "score-name";
 
+    const nameMeta = document.createElement("span");
+    nameMeta.className = "score-meta";
+    nameMeta.textContent = `Jugador ${index + 1}`;
+
     const name = document.createElement("strong");
     name.textContent = player.name || "Jugador";
-    nameBlock.append(name);
+    nameBlock.append(nameMeta, name);
 
     const badges = document.createElement("div");
     badges.className = "badges";
@@ -312,9 +334,9 @@ function renderScoreboard(room, players, result) {
     stats.className = "score-values";
     stats.append(scoreValue("Aciertos", player.hits), scoreValue("Avisos", player.misses));
 
-    row.append(nameBlock, stats);
+    row.append(avatar, nameBlock, stats);
     els.scoreBoard.append(row);
-  }
+  });
 }
 
 function renderKeyboard(room) {
@@ -358,6 +380,17 @@ function scoreValue(label, value) {
   number.textContent = String(value || 0);
   item.append(number, document.createTextNode(label));
   return item;
+}
+
+function initials(name, index) {
+  const cleanName = String(name || "").trim();
+  if (!cleanName) return String(index + 1);
+  return cleanName
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toLocaleUpperCase("es");
 }
 
 function lastMoveText(move) {
