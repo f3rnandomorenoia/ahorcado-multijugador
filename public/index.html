@@ -67,9 +67,13 @@
             <p class="kicker" id="turnLabel">Turno</p>
             <h1 id="statusTitle">Partida en marcha</h1>
           </div>
-          <div class="turn-now" aria-label="Jugador con turno">
-            <span id="turnNowLabel">Juega ahora</span>
-            <strong id="turnNowName">------</strong>
+          <div class="turn-marquee" aria-label="Jugador con turno">
+            <span class="turn-token" id="turnNowInitial">?</span>
+            <div class="turn-now">
+              <span id="turnNowLabel">Juega ahora</span>
+              <strong id="turnNowName">------</strong>
+            </div>
+            <span class="turn-cue" id="turnCue">En escena</span>
           </div>
           <p id="statusDetail" class="status-detail"></p>
         </section>

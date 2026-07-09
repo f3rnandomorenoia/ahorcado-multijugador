@@ -363,7 +363,7 @@ h1 {
 .turn-strip {
   position: relative;
   z-index: 1;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, auto) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, auto) auto;
   align-items: center;
   gap: 12px;
   border: 1px solid rgba(255, 232, 183, 0.4);
@@ -384,15 +384,54 @@ h1 {
   font-size: 1.68rem;
 }
 
-.turn-now {
+.turn-marquee {
+  position: relative;
   display: grid;
-  min-width: 150px;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-width: 260px;
+  overflow: hidden;
   border: 1px solid rgba(35, 95, 192, 0.22);
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 8px;
   color: #173657;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(223, 234, 255, 0.92));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66), 0 10px 18px rgba(31, 19, 10, 0.11);
+}
+
+.turn-marquee::before {
+  position: absolute;
+  inset: -46px auto auto -18px;
+  width: 106px;
+  height: 106px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+  content: "";
+}
+
+.turn-token {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.62);
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(180deg, #2f6fc0, #1d4d93);
+  font-size: 1rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  box-shadow: 0 8px 14px rgba(23, 54, 87, 0.25);
+}
+
+.turn-now {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
 }
 
 .turn-now span {
@@ -403,30 +442,64 @@ h1 {
 }
 
 .turn-now strong {
-  max-width: 14rem;
+  max-width: 12rem;
   overflow: hidden;
-  font-size: 1.1rem;
+  font-size: 1.24rem;
   line-height: 1.12;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.my-turn .turn-now {
+.turn-cue {
+  position: relative;
+  z-index: 1;
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: #fff;
+  background: rgba(29, 93, 157, 0.92);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.my-turn .turn-marquee {
   border-color: rgba(19, 116, 95, 0.34);
   color: #073f34;
   background: linear-gradient(180deg, rgba(230, 255, 239, 0.96), rgba(180, 237, 203, 0.94));
 }
 
-.waiting-turn .turn-now {
+.my-turn .turn-token {
+  background: linear-gradient(180deg, #18a883, #08745f);
+}
+
+.my-turn .turn-cue {
+  background: var(--primary);
+}
+
+.waiting-turn .turn-marquee {
   border-color: rgba(199, 66, 54, 0.26);
   color: #5d201b;
   background: linear-gradient(180deg, rgba(255, 249, 237, 0.94), rgba(255, 221, 190, 0.92));
 }
 
-.finished .turn-now {
+.waiting-turn .turn-token {
+  background: linear-gradient(180deg, #d85b50, #a4362d);
+}
+
+.waiting-turn .turn-cue {
+  background: var(--accent);
+}
+
+.finished .turn-marquee {
   border-color: rgba(19, 116, 95, 0.28);
   color: #073f34;
   background: var(--win);
+}
+
+.finished .turn-cue,
+.finished .turn-token {
+  background: var(--primary);
 }
 
 .status-detail {
@@ -885,6 +958,16 @@ svg {
   .status-detail {
     text-align: left;
     font-size: 0.88rem;
+  }
+
+  .turn-marquee {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    min-width: 0;
+  }
+
+  .turn-token {
+    width: 44px;
+    height: 44px;
   }
 
   .turn-now {

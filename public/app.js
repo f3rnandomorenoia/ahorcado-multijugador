@@ -28,8 +28,10 @@ const els = {
   turnLabel: $("#turnLabel"),
   statusTitle: $("#statusTitle"),
   statusDetail: $("#statusDetail"),
+  turnNowInitial: $("#turnNowInitial"),
   turnNowLabel: $("#turnNowLabel"),
   turnNowName: $("#turnNowName"),
+  turnCue: $("#turnCue"),
   endBanner: $("#endBanner"),
   endLabel: $("#endLabel"),
   endTitle: $("#endTitle"),
@@ -231,31 +233,39 @@ function renderTurn(room, players, result) {
     els.statusDetail.textContent = room.answer ? `Respuesta: ${room.answer}` : "";
     els.turnNowLabel.textContent = "Resultado";
     els.turnNowName.textContent = result.type === "winner" ? result.playerName : "Empate";
+    els.turnNowInitial.textContent = result.type === "winner" ? initials(result.playerName, 0) : "=";
+    els.turnCue.textContent = result.type === "winner" ? "Ganador" : "Tablas";
     return;
   }
 
   els.turnLabel.textContent = "Turno";
   els.turnNowLabel.textContent = "Juega ahora";
   els.turnNowName.textContent = room.currentPlayerName || "Esperando";
+  els.turnNowInitial.textContent = initials(room.currentPlayerName, 0);
+  els.turnCue.textContent = "En escena";
 
   if (!isKnownPlayer(players)) {
     els.statusTitle.textContent = "No estas en la sala";
     els.statusDetail.textContent = "Vuelve a entrar con tu nombre.";
     els.turnNowLabel.textContent = "Estado";
     els.turnNowName.textContent = "Fuera";
+    els.turnNowInitial.textContent = "!";
+    els.turnCue.textContent = "Entrar";
     return;
   }
 
   if (isMyTurn()) {
     els.statusTitle.textContent = "Tu turno";
     els.statusDetail.textContent = players.length < 2 ? "Esperando jugador" : `${players.length}/2 jugadores`;
-    els.turnNowLabel.textContent = "Juegas tu";
+    els.turnNowLabel.textContent = "Te toca";
     els.turnNowName.textContent = room.currentPlayerName || "Tu";
+    els.turnCue.textContent = "Tira letra";
     return;
   }
 
   els.statusTitle.textContent = `Turno de ${room.currentPlayerName || "otro jugador"}`;
   els.statusDetail.textContent = "Te toca esperar";
+  els.turnCue.textContent = "Espera";
 }
 
 function renderEndBanner(room, result) {
