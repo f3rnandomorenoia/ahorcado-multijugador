@@ -428,6 +428,41 @@ test("reset after terminal status starts a new word and clears scores", async ()
   assert.notEqual(stored.word, "ab");
 }));
 
+test("winner starts the next round after reset", async () => withStore(async ({ store }) => {
+  const game = await createJoinedRoom(store, { word: "ab" });
+
+  const hostMiss = await guess({
+    roomId: game.room.id,
+    playerId: game.hostId,
+    letter: "x",
+    roomRevision: game.room.revision
+  });
+  const firstGuestHit = await guess({
+    roomId: game.room.id,
+    playerId: game.guestId,
+    letter: "a",
+    roomRevision: hostMiss.room.revision
+  });
+  const guestWon = await guess({
+    roomId: game.room.id,
+    playerId: game.guestId,
+    letter: "b",
+    roomRevision: firstGuestHit.room.revision
+  });
+  const reset = await resetRoom({
+    roomId: game.room.id,
+    playerId: game.hostId,
+    roomRevision: guestWon.room.revision
+  });
+
+  assert.equal(guestWon.room.result.type, "winner");
+  assert.equal(guestWon.room.result.playerId, game.guestId);
+  assert.equal(reset.room.status, "playing");
+  assert.equal(reset.room.currentPlayerId, game.guestId);
+  assert.equal(reset.room.currentPlayerName, "Migue");
+  assert.equal(reset.room.players.every((item) => item.hits === 0 && item.misses === 0), true);
+}));
+
 async function withStore(run) {
   const previousStore = process.env.LOCAL_ROOM_STORE;
   const store = await mkdtemp(join(tmpdir(), "ahorcado-"));

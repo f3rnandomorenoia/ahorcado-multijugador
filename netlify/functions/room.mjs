@@ -190,6 +190,11 @@ export async function resetRoom({ roomId, playerId, roomRevision }) {
     throw publicError("La palabra no se puede cambiar hasta terminar la partida", 409, room);
   }
 
+  const previousResult = gameResult(room);
+  const nextStarterId = previousResult?.type === "winner"
+    ? previousResult.playerId
+    : room.currentPlayerId || room.players[0]?.id || player.id;
+
   room.word = pickWord(room.word);
   room.guessedLetters = [];
   room.wrongLetters = [];
@@ -199,7 +204,9 @@ export async function resetRoom({ roomId, playerId, roomRevision }) {
   }
   room.status = "playing";
   room.lastMove = null;
-  room.currentPlayerId = room.players[0]?.id || player.id;
+  room.currentPlayerId = room.players.some((roomPlayer) => roomPlayer.id === nextStarterId)
+    ? nextStarterId
+    : room.players[0]?.id || player.id;
   room.updatedAt = Date.now();
   await saveRoomWithRevision(room, room.revision);
 
