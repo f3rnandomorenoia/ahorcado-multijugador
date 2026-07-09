@@ -23,6 +23,15 @@ La app queda en `http://localhost:8888` o en el puerto que indique la CLI.
 npm test
 ```
 
+Tests disponibles:
+
+```bash
+npm run test:unit
+npm run test:e2e
+```
+
+`test:unit` comprueba la funcion de salas y reglas. `test:e2e` abre Chrome con dos sesiones separadas y prueba un flujo real entre jugadores.
+
 ## Despliegue en Netlify
 
 ```bash

@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "npx netlify-cli@latest dev",
-    "test": "node --test tests/room.test.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:unit": "node --test tests/room.test.mjs",
+    "test:e2e": "node --test tests/e2e.test.mjs",
     "deploy": "npx netlify-cli@latest deploy --prod"
   },
   "dependencies": {
     "@netlify/blobs": "^9.1.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }
