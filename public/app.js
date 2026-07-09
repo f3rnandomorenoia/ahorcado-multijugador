@@ -28,6 +28,8 @@ const els = {
   turnLabel: $("#turnLabel"),
   statusTitle: $("#statusTitle"),
   statusDetail: $("#statusDetail"),
+  turnNowLabel: $("#turnNowLabel"),
+  turnNowName: $("#turnNowName"),
   endBanner: $("#endBanner"),
   endLabel: $("#endLabel"),
   endTitle: $("#endTitle"),
@@ -227,20 +229,28 @@ function renderTurn(room, players, result) {
     els.turnLabel.textContent = "Resultado";
     els.statusTitle.textContent = result.type === "winner" ? `¡Gana ${result.playerName}!` : "Empate";
     els.statusDetail.textContent = room.answer ? `Respuesta: ${room.answer}` : "";
+    els.turnNowLabel.textContent = "Resultado";
+    els.turnNowName.textContent = result.type === "winner" ? result.playerName : "Empate";
     return;
   }
 
   els.turnLabel.textContent = "Turno";
+  els.turnNowLabel.textContent = "Juega ahora";
+  els.turnNowName.textContent = room.currentPlayerName || "Esperando";
 
   if (!isKnownPlayer(players)) {
     els.statusTitle.textContent = "No estas en la sala";
     els.statusDetail.textContent = "Vuelve a entrar con tu nombre.";
+    els.turnNowLabel.textContent = "Estado";
+    els.turnNowName.textContent = "Fuera";
     return;
   }
 
   if (isMyTurn()) {
     els.statusTitle.textContent = "Tu turno";
     els.statusDetail.textContent = players.length < 2 ? "Esperando jugador" : `${players.length}/2 jugadores`;
+    els.turnNowLabel.textContent = "Juegas tu";
+    els.turnNowName.textContent = room.currentPlayerName || "Tu";
     return;
   }
 
