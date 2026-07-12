@@ -121,11 +121,25 @@
                 <strong id="lastMove">Sin jugadas</strong>
               </div>
             </section>
+
+            <section class="letter-tray" aria-label="Letras jugadas">
+              <div>
+                <span>Aciertos</span>
+                <p id="rightLetters">Ninguna</p>
+              </div>
+              <div>
+                <span>Fallos</span>
+                <p id="wrongLetters">Ninguno</p>
+              </div>
+            </section>
           </aside>
         </div>
 
         <p id="gameError" class="error game-error" role="alert"></p>
-        <section class="keyboard" id="keyboard" aria-label="Teclado de letras"></section>
+        <section class="keyboard-dock" aria-label="Accion de turno">
+          <p id="keyboardHint" class="keyboard-hint">Elige una letra cuando sea tu turno.</p>
+          <section class="keyboard" id="keyboard" aria-label="Teclado de letras"></section>
+        </section>
       </section>
     </main>
 

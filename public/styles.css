@@ -859,10 +859,97 @@ svg {
   transition: width 180ms ease;
 }
 
+.letter-tray {
+  display: grid;
+  gap: 8px;
+}
+
+.letter-tray div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid rgba(109, 77, 45, 0.22);
+  border-radius: 8px;
+  padding: 9px;
+  background: linear-gradient(180deg, rgba(255, 251, 241, 0.95), rgba(236, 243, 233, 0.86));
+  box-shadow: 0 10px 22px rgba(31, 19, 10, 0.1);
+}
+
+.letter-tray span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.letter-tray p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 25px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.letter-tray p span {
+  display: grid;
+  place-items: center;
+  min-width: 27px;
+  height: 27px;
+  border-radius: 7px;
+  color: #fff;
+  background: var(--primary);
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+#wrongLetters span {
+  background: var(--accent);
+}
+
 .game-error {
   min-height: 1.15em;
   color: #ffd6ce;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.44);
+}
+
+.keyboard-dock {
+  display: grid;
+  gap: 7px;
+  position: relative;
+  z-index: 1;
+}
+
+.keyboard-hint {
+  margin: 0;
+  border: 1px solid rgba(255, 232, 183, 0.34);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #fff7e8;
+  background: rgba(20, 14, 10, 0.58);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-align: center;
+  text-shadow: 0 1px 7px rgba(0, 0, 0, 0.42);
+}
+
+.my-turn .keyboard-hint {
+  border-color: rgba(91, 226, 182, 0.38);
+  color: #e7fff5;
+  background: rgba(8, 75, 62, 0.72);
+}
+
+.waiting-turn .keyboard-hint {
+  border-color: rgba(255, 213, 159, 0.34);
+  background: rgba(91, 40, 28, 0.66);
+}
+
+.finished .keyboard-hint {
+  border-color: rgba(91, 226, 182, 0.34);
+  background: rgba(20, 83, 67, 0.72);
 }
 
 .keyboard {
@@ -901,6 +988,12 @@ svg {
   color: #fff;
   background: linear-gradient(180deg, #dc6055, var(--accent));
   opacity: 0.92;
+}
+
+.keyboard button.last-play {
+  outline: 3px solid rgba(255, 255, 255, 0.68);
+  outline-offset: 1px;
+  transform: translateY(-1px);
 }
 
 .copy-buffer {
@@ -1051,6 +1144,24 @@ svg {
     grid-template-columns: 96px 1fr;
   }
 
+  .letter-tray {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .letter-tray div {
+    padding: 8px;
+  }
+
+  .letter-tray p span {
+    min-width: 25px;
+    height: 25px;
+  }
+
+  .keyboard-hint {
+    padding: 7px 8px;
+    font-size: 0.84rem;
+  }
+
   .keyboard {
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 5px;
@@ -1093,6 +1204,10 @@ svg {
 
   .round-meta {
     grid-template-columns: 82px 1fr;
+  }
+
+  .letter-tray {
+    grid-template-columns: 1fr;
   }
 
   .keyboard {

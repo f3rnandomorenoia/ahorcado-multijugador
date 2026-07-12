@@ -43,6 +43,9 @@ const els = {
   maxWrong: $("#maxWrong"),
   missMeter: $("#missMeter"),
   lastMove: $("#lastMove"),
+  rightLetters: $("#rightLetters"),
+  wrongLetters: $("#wrongLetters"),
+  keyboardHint: $("#keyboardHint"),
   keyboard: $("#keyboard")
 };
 
@@ -222,6 +225,8 @@ function render() {
   renderEndBanner(room, result);
   renderWord(room);
   renderScoreboard(room, players, result);
+  renderLetterTray(room);
+  renderKeyboardHint(room, players, result);
   renderKeyboard(room);
   renderBusy();
 }
@@ -363,6 +368,7 @@ function renderKeyboard(room) {
   const guessed = new Set(room.guessedLetters || []);
   const wrong = new Set(room.wrongLetters || []);
   const enabled = canPlay();
+  const lastLetter = String(room.lastMove?.letter || "");
 
   els.keyboard.querySelectorAll("button").forEach((button) => {
     const letter = button.dataset.letter;
@@ -372,7 +378,55 @@ function renderKeyboard(room) {
     button.disabled = !enabled || usedCorrect || usedWrong;
     button.classList.toggle("correct", usedCorrect);
     button.classList.toggle("wrong", usedWrong);
+    button.classList.toggle("last-play", letter === lastLetter);
   });
+}
+
+function renderLetterTray(room) {
+  renderLetterList(els.rightLetters, room.guessedLetters || [], "Ninguna");
+  renderLetterList(els.wrongLetters, room.wrongLetters || [], "Ninguno");
+}
+
+function renderLetterList(node, letters, emptyLabel) {
+  node.replaceChildren();
+  const cleanLetters = [...new Set(letters.map((letter) => String(letter || "").trim()).filter(Boolean))];
+
+  if (!cleanLetters.length) {
+    node.textContent = emptyLabel;
+    return;
+  }
+
+  for (const letter of cleanLetters) {
+    const chip = document.createElement("span");
+    chip.textContent = letter.toLocaleUpperCase("es");
+    node.append(chip);
+  }
+}
+
+function renderKeyboardHint(room, players, result) {
+  if (result) {
+    els.keyboardHint.textContent = "Ronda terminada. Pulsa Nueva palabra cuando quieras seguir.";
+    return;
+  }
+
+  if (!isKnownPlayer(players)) {
+    els.keyboardHint.textContent = "Entra con tu nombre para poder jugar en esta sala.";
+    return;
+  }
+
+  if (state.busy) {
+    els.keyboardHint.textContent = "Aplicando la jugada...";
+    return;
+  }
+
+  if (isMyTurn()) {
+    els.keyboardHint.textContent = players.length < 2
+      ? "Te toca. Puedes tirar una letra o copiar el enlace para invitar."
+      : "Te toca: elige una letra del teclado.";
+    return;
+  }
+
+  els.keyboardHint.textContent = `Espera a ${room.currentPlayerName || "tu rival"}.`;
 }
 
 function renderBusy() {
