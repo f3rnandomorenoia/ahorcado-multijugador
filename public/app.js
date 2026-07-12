@@ -156,6 +156,7 @@ async function guess(letter) {
   setBusy(false);
 
   if (data?.room) {
+    playGuessHaptic(data.room, letter);
     state.room = data.room;
     render();
   }
@@ -400,6 +401,21 @@ function renderKeyboard(room) {
     button.classList.toggle("wrong", usedWrong);
     button.classList.toggle("last-play", letter === lastLetter);
   });
+}
+
+function playGuessHaptic(room, letter) {
+  const move = room?.lastMove;
+  if (!move || move.playerId !== state.playerId || move.letter !== letter) return;
+
+  const pattern = isFinished(room)
+    ? (move.hit ? [12, 35, 60] : [30, 40, 80])
+    : (move.hit ? 12 : [30, 40, 30]);
+  vibrate(pattern);
+}
+
+function vibrate(pattern) {
+  if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
+  navigator.vibrate(pattern);
 }
 
 function renderLetterTray(room) {
