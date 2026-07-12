@@ -125,6 +125,36 @@ test("shared room links handle mobile entry, focus, and auto-join with saved nam
   });
 });
 
+test("mobile life pips do not cover long word letters", async () => {
+  await withApp(async ({ baseUrl, store }) => {
+    await withBrowser(async (browser) => {
+      const created = await postJson(`${baseUrl}/api/room`, { action: "create", playerName: "Fernando" });
+      const roomId = created.room.id;
+      await forceRoom(store, roomId, (room) => {
+        room.word = "programacion";
+        room.guessedLetters = ["a"];
+        room.wrongLetters = [];
+        room.status = "playing";
+        room.lastMove = null;
+      });
+
+      for (const width of [390, 360]) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, isMobile: true });
+        const page = await context.newPage();
+        await page.goto(baseUrl);
+        await page.evaluate(() => localStorage.setItem("ahorcado.playerName", "Fernando"));
+        await page.goto(`${baseUrl}/?sala=${roomId}`);
+        await page.waitForSelector("#game:not(.hidden)");
+        await waitText(page, "#lifePips", /●●●●●●/);
+        assert.equal(await aria(page, "#word"), "Palabra: _____a_a____");
+        await assertLifePipsDoNotCoverLetters(page);
+        await assertNoHorizontalOverflow(page);
+        await context.close();
+      }
+    });
+  });
+});
+
 async function withApp(run) {
   const previousStore = process.env.LOCAL_ROOM_STORE;
   const store = await mkdtemp(join(tmpdir(), "ahorcado-e2e-"));
@@ -303,4 +333,41 @@ async function assertNoHorizontalOverflow(page) {
   }));
   assert.equal(sizes.keyboardButtons, 27);
   assert.ok(sizes.scrollWidth <= sizes.clientWidth, `horizontal overflow: ${sizes.scrollWidth} > ${sizes.clientWidth}`);
+}
+
+async function assertLifePipsDoNotCoverLetters(page) {
+  const result = await page.evaluate(() => {
+    const pips = document.querySelector("#lifePips")?.getBoundingClientRect();
+    const letters = [...document.querySelectorAll("#word .letter, #word .letter-separator")]
+      .map((node, index) => ({ index, rect: node.getBoundingClientRect() }));
+
+    if (!pips) return { missing: true };
+
+    const overlaps = letters
+      .filter(({ rect }) => !(
+        pips.right <= rect.left + 1 ||
+        pips.left >= rect.right - 1 ||
+        pips.bottom <= rect.top + 1 ||
+        pips.top >= rect.bottom - 1
+      ))
+      .map(({ index, rect }) => ({
+        index,
+        pips: rectToObject(pips),
+        letter: rectToObject(rect)
+      }));
+
+    return { missing: false, overlaps };
+
+    function rectToObject(rect) {
+      return {
+        top: Math.round(rect.top),
+        right: Math.round(rect.right),
+        bottom: Math.round(rect.bottom),
+        left: Math.round(rect.left)
+      };
+    }
+  });
+
+  assert.equal(result.missing, false);
+  assert.deepEqual(result.overlaps, [], `life pips overlap word letters: ${JSON.stringify(result.overlaps)}`);
 }

@@ -1266,20 +1266,42 @@ svg {
 
   .board {
     grid-template-columns: 84px minmax(0, 1fr);
-    grid-template-rows: auto;
-    gap: 7px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "drawing lives"
+      "drawing word";
+    gap: 3px 7px;
     padding: 6px;
   }
 
+  .life-pips {
+    position: static;
+    grid-area: lives;
+    justify-self: end;
+    align-self: end;
+    gap: 3px;
+  }
+
+  .life-pip {
+    width: 16px;
+    height: 16px;
+    font-size: 0.68rem;
+  }
+
   .drawing {
+    grid-area: drawing;
     width: 84px;
     padding: 5px;
+  }
+
+  .word-panel {
+    grid-area: word;
   }
 
   .word {
     justify-content: flex-start;
     gap: 4px;
-    min-height: 36px;
+    min-height: 34px;
   }
 
   .letter,
@@ -1457,6 +1479,16 @@ svg {
 
   .drawing {
     width: 78px;
+  }
+
+  .life-pips {
+    gap: 2px;
+  }
+
+  .life-pip {
+    width: 14px;
+    height: 14px;
+    font-size: 0.58rem;
   }
 
   .letter,
