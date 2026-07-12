@@ -38,6 +38,7 @@ const els = {
   endMessage: $("#endMessage"),
   word: $("#word"),
   answer: $("#answer"),
+  lifePips: $("#lifePips"),
   scoreBoard: $("#scoreBoard"),
   misses: $("#misses"),
   maxWrong: $("#maxWrong"),
@@ -208,6 +209,8 @@ function render() {
     `miss-${visibleParts}`,
     `status-${room.status || "playing"}`,
     isMyTurn() && isPlaying(room) ? "my-turn" : "waiting-turn",
+    room.lastMove?.hit === true ? "last-hit" : "",
+    room.lastMove?.hit === false ? "last-miss" : "",
     finished ? "finished" : "",
     state.busy ? "busy" : ""
   ].filter(Boolean);
@@ -223,6 +226,7 @@ function render() {
 
   renderTurn(room, players, result);
   renderEndBanner(room, result);
+  renderLifePips(room, missCount, maxWrong);
   renderWord(room);
   renderScoreboard(room, players, result);
   renderLetterTray(room);
@@ -309,6 +313,22 @@ function renderWord(room) {
     }
     els.word.append(span);
   }
+}
+
+function renderLifePips(room, missCount, maxWrong) {
+  els.lifePips.replaceChildren();
+  const total = Math.max(1, maxWrong);
+  const remaining = Math.max(0, total - missCount);
+
+  for (let index = 0; index < total; index += 1) {
+    const pip = document.createElement("span");
+    pip.className = index < remaining ? "life-pip alive" : "life-pip lost";
+    pip.textContent = index < remaining ? "●" : "×";
+    pip.setAttribute("aria-hidden", "true");
+    els.lifePips.append(pip);
+  }
+
+  els.lifePips.setAttribute("aria-label", `${remaining} de ${total} vidas restantes`);
 }
 
 function renderScoreboard(room, players, result) {

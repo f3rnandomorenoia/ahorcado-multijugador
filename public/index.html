@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#22180f">
+    <meta name="theme-color" content="#120f2b">
     <title>Ahorcado multijugador</title>
-    <link rel="preload" href="/assets/game-backdrop.png" as="image">
+    <link rel="preload" href="/assets/game-backdrop-arcade.png" as="image">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
@@ -86,6 +86,7 @@
 
         <div class="play-area">
           <section class="board" aria-label="Partida">
+            <div class="life-pips" id="lifePips" aria-label="Vidas restantes"></div>
             <div class="drawing" aria-label="Ahorcado">
               <svg viewBox="0 0 220 240" role="img" aria-hidden="true">
                 <line class="gallows" x1="28" y1="222" x2="190" y2="222"></line>

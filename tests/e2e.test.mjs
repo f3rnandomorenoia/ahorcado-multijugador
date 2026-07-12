@@ -46,6 +46,7 @@ test("two browser players can join, take turns, finish, and reset a game", async
 
       await waitText(host, "#statusDetail", /2\/2 jugadores/);
       await waitText(host, "#keyboardHint", /Te toca: elige una letra/);
+      await waitText(host, "#lifePips", /●●●●●●/);
       await assertNoHorizontalOverflow(host);
       await assertNoHorizontalOverflow(guest);
 
@@ -61,6 +62,7 @@ test("two browser players can join, take turns, finish, and reset a game", async
       await waitText(guest, "#statusTitle", /^Tu turno$/);
       await waitText(guest, "#lastMove", /Fernando: X falla/);
       await waitText(guest, "#wrongLetters", /X/);
+      await waitText(guest, "#lifePips", /●●●●●×/);
       await waitText(host, "#keyboardHint", /Espera a Migue/);
       assert.equal(await statFor(guest, "Fernando", "Avisos"), "1");
       assert.equal(await isLetterDisabled(host, "c"), true);
